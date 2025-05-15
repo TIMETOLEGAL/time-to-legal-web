@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard - Time to Legal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f3f3f3;
+    }
+    .navbar {
+      background-color: #b80000;
+      padding: 1rem;
+      color: white;
+      text-align: center;
+    }
+    .dashboard {
+      padding: 2rem;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #b80000;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #b80000;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #a00000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <h1>Welcome to Time to Legal Dashboard</h1>
+  </div>
+
+  <div class="dashboard" id="dashboard">
+    <!-- Dynamic content loaded based on role -->
+  </div>
+
+  <script>
+    const role = new URLSearchParams(window.location.search).get('role');
+    const dashboard = document.getElementById("dashboard");
+    const scriptURL = "https://script.google.com/macros/s/AKfycbytXBhdhae0BCSweDt8s6aYO7MoFfXv4ZjHrG7ONC8pIsR3s9oe5GfJ7ADzpRPrSkHt/exec";
+
+    if (role === "sales") {
+      dashboard.innerHTML = `
+        <div class="card">
+          <h2>Sales Team - Upload Task</h2>
+          <input type="text" id="clientName" placeholder="Client Name" />
+          <textarea id="taskDescription" placeholder="Task Description"></textarea>
+          <input type="date" id="deadline" />
+          <input type="email" id="assignedBy" placeholder="Your Email" />
+          <button onclick="uploadTask()">Submit Task</button>
+        </div>
+      `;
+    } else if (role === "back") {
+      dashboard.innerHTML = `
+        <div class="card">
+          <h2>Back-End Team Dashboard</h2>
+          <p>Feature coming soon: Update task status and manage progress.</p>
+        </div>
+      `;
+    } else if (role === "director") {
+      dashboard.innerHTML = `
+        <div class="card">
+          <h2>Director Dashboard</h2>
+          <p>Feature coming soon: View all tasks and team performance.</p>
+        </div>
+      `;
+    } else {
+      dashboard.innerHTML = `
+        <div class="card">
+          <h2>Access Denied</h2>
+          <p>Invalid or missing role in URL.</p>
+        </div>
+      `;
+    }
+
+    function uploadTask() {
+      const clientName = document.getElementById("clientName").value;
+      const taskDescription = document.getElementById("taskDescription").value;
+      const deadline = document.getElementById("deadline").value;
+      const assignedBy = document.getElementById("assignedBy").value;
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "addTask",
+          clientName,
+          taskDescription,
+          deadline,
+          assignedBy
+        })
+      })
+      .then(res => res.text())
+      .then(msg => alert(msg))
+      .catch(err => alert("Failed to submit task: " + err));
+    }
+  </script>
+</body>
+</html>
